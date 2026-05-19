@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: approval-workflow-app
+
+    ports:
+      - "8000:8000"
+
+    volumes:
+      - .:/var/www
+
+    depends_on:
+      - mysql
+
+    networks:
+      - approval-network
+
+  mysql:
+    image: mysql:8.0
+
+    container_name: approval-workflow-db
+
+    restart: unless-stopped
+
+    ports:
+      - "3307:3306"
+
+    environment:
+      MYSQL_DATABASE: approval_workflow
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_PASSWORD: root
+      MYSQL_USER: laravel
+
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+    networks:
+      - approval-network
+
+networks:
+  approval-network:
+
+volumes:
+  mysql-data:

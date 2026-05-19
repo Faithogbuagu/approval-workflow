@@ -13,11 +13,9 @@ return new class extends Migration
     {
         Schema::create('request_approvals', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('request_id')
-                ->constrained();
+            $table->foreignId('request_id')->constrained();
 
-            $table->foreignId('approver_id')
-                ->constrained('users');
+            $table->foreignId('approver_id')->constrained('users');
 
             $table->integer('level');
 

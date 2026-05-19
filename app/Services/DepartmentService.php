@@ -46,6 +46,12 @@ class DepartmentService
         if (!$department) {
             return null;
         }
+
+        if ($department->users()->exists()) {
+
+            return false;
+        }
+
         $department->status = 'Inactive';
         $department->deleted_by = auth()->id();
         $department->save();
