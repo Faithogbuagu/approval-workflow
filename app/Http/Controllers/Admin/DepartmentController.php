@@ -59,6 +59,9 @@ class DepartmentController extends Controller
         if (!$deleted) {
             return response()->json(['message' => 'Department not found'], 404);
         }
+        if ($deleted === false) {
+            return response()->json(['message' => 'Cannot delete department with associated users'], 400);
+        }
 
         return response()->json(['message' => 'Department deleted successfully'], 200);
     }

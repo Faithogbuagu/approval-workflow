@@ -13,11 +13,9 @@ return new class extends Migration
     {
         Schema::create('requests', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')
-                ->constrained();
+            $table->foreignId('user_id') ->constrained();
 
-            $table->foreignId('department_id')
-                ->constrained();
+            $table->foreignId('department_id')->constrained();
 
             $table->string('title');
 
@@ -29,8 +27,7 @@ return new class extends Migration
                 'rejected'
             ])->default('pending');
 
-            $table->unsignedInteger('current_level')
-                ->default(1);
+            $table->unsignedInteger('current_level')->default(1);
             $table->timestamps();
         });
     }
