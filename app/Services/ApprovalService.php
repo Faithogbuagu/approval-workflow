@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Models\ApprovalLevel;
 use Illuminate\Support\Facades\DB;
 use App\Models\RequestApproval;
-use Illuminate\Support\Facades\Hash;
 
 class ApprovalService
 {
@@ -27,7 +26,9 @@ class ApprovalService
 
     public function getRequestById($id)
     {
-        return RequestApproval::with(['request', 'approver'])->find($id);
+        return RequestApproval::with(['request', 'approver'])->where('id', $id)
+                        ->where('approver_id', auth()->id())
+                        ->firstOrFail();
     }
 
     public function approve($approval)
@@ -48,11 +49,18 @@ class ApprovalService
             if ($approval->status !== 'pending') {
 
                 return response()->json([
-                    'message' => 'Already processed'
+                    'message' => 'Approval already processed'
                 ], 422);
             }
 
             $workflowRequest = $approval->request;
+
+            if ($workflowRequest->status !== 'pending') {
+
+                return response()->json([
+                    'message' => 'Request already processed'
+                ], 422);
+            }
 
             if ($workflowRequest->current_level !== $approval->level) {
                 return response()->json([
@@ -67,6 +75,7 @@ class ApprovalService
 
             $nextApproval = RequestApproval::where('request_id',$workflowRequest->id)
                                 ->where('level', '>', $approval->level)
+                                ->where('status', 'pending')
                                 ->orderBy('level')->first();
 
             if ($nextApproval) {
@@ -103,7 +112,39 @@ class ApprovalService
 
         try {
 
+            $user = auth()->user();
+
+            // Ensure only assigned approver can reject
+            if ($approval->approver_id !== $user->id) {
+
+                return response()->json([
+                    'message' => 'Unauthorized'
+                ], 403);
+            }
+
+            // Ensure approval has not already been processed
+            if ($approval->status !== 'pending') {
+
+                return response()->json([
+                    'message' => 'Approval already processed'
+                ], 422);
+            }
+
             $workflowRequest = $approval->request;
+
+            if ($workflowRequest->status !== 'pending') {
+
+                return response()->json([
+                    'message' => 'Request already processed'
+                ], 422);
+            }
+
+            if ($workflowRequest->current_level !== $approval->level) {
+
+                return response()->json([
+                    'message' => 'Not current approval level'
+                ], 422);
+            }
 
             $approval->update([
                 'status' => 'rejected',
