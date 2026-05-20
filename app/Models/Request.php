@@ -11,7 +11,8 @@ class Request extends Model
         'description',
         'status',
         'user_id',
-        'department_id'
+        'department_id',
+        'current_level'
     ];
 
     public function user()

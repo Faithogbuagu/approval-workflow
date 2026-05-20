@@ -12,13 +12,13 @@ class RequestService
 {
     public function getAllRequests()
     {
-        return Request::with('approvalHierarchy.levels.approver')
+        return Request::with('user', 'approvals')
                 ->where('user_id', auth()->id())->get();
     }
 
     public function getRequestById($id)
     {
-        return Request::with('approvalHierarchy.levels.approver')->find($id);
+        return Request::with('user', 'approvals')->find($id);
     }
 
     public function createRequest(array $data)

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\RejectRequest;
+use App\Models\RequestApproval;
 use App\Services\ApprovalService;
 use Illuminate\Http\Request;
 

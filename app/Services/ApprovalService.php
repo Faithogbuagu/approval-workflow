@@ -115,6 +115,12 @@ class ApprovalService
                 'status' => 'rejected'
             ]);
 
+            RequestApproval::where('request_id', $workflowRequest->id)
+                ->where('status', 'pending')
+                ->update([
+                    'status' => 'rejected'
+                ]);
+
             DB::commit();
 
             return response()->json([
