@@ -76,11 +76,22 @@ class RequestService
 
     public function deleteRequest($id)
     {
-        $request = $this->getRequestById($id);
-        if (!$request) {
-            return false;
+        $hierarchy = $this->getHierarchyById($id);
+        if (!$hierarchy) {
+            return null;
         }
 
-        return $request->delete();
+        DB::beginTransaction();
+
+        try {
+            $hierarchy->levels()->delete();
+            $hierarchy->delete();
+            
+            DB::commit();
+            return true;
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return false;
+        }
     }
 }

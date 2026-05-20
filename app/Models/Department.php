@@ -17,4 +17,19 @@ class Department extends Model
     {
         return $this->hasOne(ApprovalHierarchy::class);
     }
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function deleter()
+    {
+        return $this->belongsTo(User::class, 'deleted_by');
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('status', 'Active');
+    }
 }

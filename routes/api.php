@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ApprovalController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\Admin\ApprovalHierarchyController;
 use App\Http\Controllers\Admin\DepartmentController;

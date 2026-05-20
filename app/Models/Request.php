@@ -10,13 +10,13 @@ class Request extends Model
         'title',
         'description',
         'status',
-        'requester_id',
+        'user_id',
         'department_id'
     ];
 
-    public function requester()
+    public function user()
     {
-        return $this->belongsTo(User::class, 'requester_id');
+        return $this->belongsTo(User::class);
     }
 
     public function department()
@@ -26,6 +26,6 @@ class Request extends Model
 
     public function approvals()
     {
-        return $this->hasMany(Approval::class);
+        return $this->hasMany(RequestApproval::class);
     }
 }

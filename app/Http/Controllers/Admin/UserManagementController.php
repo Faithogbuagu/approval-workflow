@@ -37,6 +37,10 @@ class UserManagementController extends Controller
     {
         $user = $this->userManagementService->register($request->validated());
 
+        if (!$user) {
+            return response()->json(['message' => 'Failed to create user. Department may be inactive.'], 422);
+        }
+
         return response()->json([
             'message' => 'Account created successfully',
             'user' => $user
@@ -49,6 +53,10 @@ class UserManagementController extends Controller
 
         if (!$user) {
             return response()->json(['message' => 'User not found'], 404);
+        }
+
+        if ($user === false) {
+            return response()->json(['message' => 'Failed to update user. Department may be inactive.'], 422);
         }
 
         return response()->json($user, 200);

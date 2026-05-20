@@ -16,4 +16,9 @@ class ApprovalHierarchy extends Model
         return $this->hasMany(ApprovalLevel::class)
             ->orderBy('level');
     }
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
+    }
 }
