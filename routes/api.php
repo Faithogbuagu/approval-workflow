@@ -26,9 +26,9 @@ Route::middleware('auth:api')->group(function () {
 
         Route::apiResource('requests', RequestController::class);
 
-        Route::get('requests/all', [RequestController::class, 'getAllRequests']);
-        Route::get('requests/pending', [RequestController::class, 'getPendingRequest']);
-        Route::get('requests/{request}', [RequestController::class, 'show']);
+        Route::get('requests/approval/all', [ApprovalController::class, 'index']);
+        Route::get('requests/approval/pending', [ApprovalController::class, 'getPendingRequest']);
+        Route::get('requests/{request}', [ApprovalController::class, 'show']);
         Route::post('requests/{approval}/approve', [ApprovalController::class, 'approve']);
         Route::post('requests/{approval}/reject', [ApprovalController::class, 'reject']);
 });

@@ -18,7 +18,9 @@ class RequestService
 
     public function getRequestById($id)
     {
-        return Request::with('user', 'approvals')->find($id);
+        return Request::with('user', 'approvals')->where('id', $id)
+                            ->where('user_id', auth()->id())
+                            ->first();
     }
 
     public function createRequest(array $data)
@@ -38,7 +40,11 @@ class RequestService
                 'current_level' => 1
             ]);
 
-            $hierarchy = ApprovalHierarchy::where('department_id', $user->department_id)->first();
+            $hierarchy = ApprovalHierarchy::with('levels')->where('department_id', $user->department_id)->first();
+
+            if (!$hierarchy) {
+                throw new \Exception('No approval hierarchy configured');
+            }
 
             foreach ($hierarchy->levels as $level) {
 
@@ -76,16 +82,16 @@ class RequestService
 
     public function deleteRequest($id)
     {
-        $hierarchy = $this->getHierarchyById($id);
-        if (!$hierarchy) {
+        $request = $this->getRequestById($id);
+        if (!$request) {
             return null;
         }
 
         DB::beginTransaction();
 
         try {
-            $hierarchy->levels()->delete();
-            $hierarchy->delete();
+            $request->approvals()->delete();
+            $request->delete();
             
             DB::commit();
             return true;
