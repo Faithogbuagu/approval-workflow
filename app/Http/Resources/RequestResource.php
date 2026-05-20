@@ -19,9 +19,9 @@ class RequestResource extends JsonResource
             'title' => $this->title,
             'description' => $this->description,
             'status' => $this->status,
-            'requester' => new UserResource($this->requester),
+            'requester' => new UserResource($this->user),
             // 'department' => new DepartmentResource($this->department),
-            'approvals' => RequestApprovalResource::collection($this->approvals),
+            'approvals' => ApprovalResource::collection($this->approvals),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

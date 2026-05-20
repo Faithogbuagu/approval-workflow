@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Department;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
@@ -19,6 +20,12 @@ class UserManagementService
 
     public function register(array $data)
     {
+        $department = Department::find($data['department_id']);
+
+        if ($department->status !== 'Active') {
+            return false;
+        }
+
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
@@ -34,6 +41,13 @@ class UserManagementService
         if (!$user) {
             return null;
         }
+
+        $department = Department::find($data['department_id']);
+
+        if ($department->status !== 'Active') {
+            return false;
+        }
+        
         $user->update($data);
         return $user;
     }
